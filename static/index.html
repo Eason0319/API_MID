@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>富邦悍將球迷論壇 - 悍將魂聚集地</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+
+    /* 背景漸層動畫 */
+    .hero-gradient {
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #60a5fa 100%);
+      background-size: 400% 400%;
+      animation: gradientMove 12s ease infinite;
+    }
+
+    @keyframes gradientMove {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* 光暈文字效果 */
+    .glow-text {
+      text-shadow: 0 0 25px rgba(96, 165, 250, 0.7);
+    }
+
+    /* 卡片 hover 效果 */
+    .card-hover {
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    }
+
+    .card-hover:hover {
+      transform: translateY(-6px) scale(1.03);
+      box-shadow: 0 20px 50px rgba(59, 130, 246, 0.3);
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* 背景紋理 */
+    .texture {
+      background-image: url('https://www.transparenttextures.com/patterns/football-noise.png');
+      background-repeat: repeat;
+      opacity: 0.2;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-950 text-white">
+  <!-- Hero Section -->
+  <div class="relative hero-gradient min-h-screen flex flex-col overflow-hidden">
+    <div class="absolute inset-0 texture pointer-events-none"></div>
+
+    <!-- Header -->
+    <header class="container mx-auto px-6 py-6 flex items-center justify-between z-10">
+      <div class="flex items-center space-x-4">
+        <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg overflow-hidden">
+          <img src="img/logo.jpg" alt="富邦悍將Logo" class="w-full h-full object-cover">
+        </div>
+        <h1 class="text-2xl font-black tracking-wide">富邦悍將球迷論壇</h1>
+      </div>
+      <nav class="hidden md:flex space-x-8 text-blue-100">
+        <a href="index.html" class="text-yellow-400 font-bold">🏠 首頁</a>
+        <a href="blog.html" class="hover:text-yellow-400 transition">📄 文章列表</a>
+        <a href="#" class="hover:text-yellow-400 transition">📰 關於我們</a>
+      </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="relative container mx-auto px-6 flex-grow flex items-center z-10">
+      <div class="w-full text-center">
+        <h2 class="text-6xl md:text-8xl font-black mb-4 glow-text drop-shadow-lg">
+          悍將魂<br />聚集地
+        </h2>
+        <p class="text-xl md:text-2xl text-blue-100 mb-6 font-light">
+          Fubon Guardians Fans Community
+        </p>
+        <div class="w-32 h-1 bg-yellow-400 mx-auto mb-12"></div>
+
+        <img src="img/img1.jpg" alt="富邦悍將球迷圖片"
+          class="mx-auto mb-12 rounded-xl shadow-2xl w-full max-w-5xl transition-transform duration-300 hover:scale-105">
+
+        <!-- Features -->
+        <div class="grid md:grid-cols-3 gap-6 mb-12 max-w-6xl mx-auto">
+          <div class="card-hover bg-white/10 backdrop-blur-lg rounded-2xl p-8 text-center border border-white/20">
+            <div class="text-6xl mb-4">💬</div>
+            <h3 class="text-2xl font-bold mb-2">暢所欲言</h3>
+            <p class="text-blue-200">與全台悍將球迷分享你的觀點與熱情</p>
+          </div>
+          <div class="card-hover bg-white/10 backdrop-blur-lg rounded-2xl p-8 text-center border border-white/20">
+            <div class="text-6xl mb-4">⚾</div>
+            <h3 class="text-2xl font-bold mb-2">賽事討論</h3>
+            <p class="text-blue-200">即時討論每場比賽的精彩瞬間</p>
+          </div>
+          <div class="card-hover bg-white/10 backdrop-blur-lg rounded-2xl p-8 text-center border border-white/20">
+            <div class="text-6xl mb-4">🏆</div>
+            <h3 class="text-2xl font-bold mb-2">球迷互動</h3>
+            <p class="text-blue-200">建立專屬於悍將球迷的交流圈</p>
+          </div>
+        </div>
+
+        <!-- CTA Button -->
+        <div class="text-center">
+          <button onclick="goToForum()"
+            class="group relative inline-flex items-center justify-center px-12 py-5 text-xl font-bold text-blue-900 bg-yellow-400 rounded-full hover:bg-yellow-300 transition-all duration-300 shadow-2xl hover:shadow-yellow-400/50 hover:scale-105">
+            <span>進入論壇</span>
+            <svg class="ml-3 w-6 h-6 group-hover:translate-x-2 transition-transform duration-300" fill="none"
+              stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+            </svg>
+          </button>
+          <p class="mt-6 text-blue-200">
+            加入我們，一起為悍將吶喊！
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer
+      class="bg-gray-900/70 backdrop-blur-sm border-t border-blue-800 py-6 text-center text-blue-200 text-sm relative z-10">
+      <p>
+        本論壇為球迷自發性建立，與富邦悍將球團無直接關聯<br />
+        © 2025 富邦悍將球迷論壇 | 悍將精神，永不熄滅 ⚔️
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    function goToForum() {
+      window.location.href = '/blog.html';
+    }
+  </script>
+</body>
+
+</html>

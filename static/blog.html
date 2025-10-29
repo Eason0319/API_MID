@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>文章列表</title>
+  <base href="/" />
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          container: { center: true, padding: '1rem' }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+
+    /* 動態漸層背景動畫 */
+    .hero-gradient {
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #60a5fa 100%);
+      background-size: 400% 400%;
+      animation: gradientMove 12s ease infinite;
+    }
+
+    @keyframes gradientMove {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* 光暈文字 */
+    .glow-text {
+      text-shadow: 0 0 25px rgba(96, 165, 250, 0.7);
+    }
+
+    /* 背景紋理 */
+    .texture {
+      background-image: url('https://www.transparenttextures.com/patterns/football-noise.png');
+      background-repeat: repeat;
+      opacity: 0.15;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-950 text-white">
+  <div class="hero-gradient min-h-screen relative overflow-hidden flex flex-col">
+    <div class="absolute inset-0 texture pointer-events-none"></div>
+
+    <header class="container mx-auto px-6 py-6 flex items-center justify-between z-10">
+      <div class="flex items-center space-x-4">
+        <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg overflow-hidden">
+          <img src="img/logo.jpg" alt="富邦悍將Logo" class="w-full h-full object-cover">
+        </div>
+        <h1 class="text-2xl font-black tracking-wide">富邦悍將球迷論壇</h1>
+      </div>
+      <nav class="hidden md:flex space-x-8 text-blue-100">
+        <a href="index.html" class="hover:text-yellow-400 transition">🏠 首頁</a>
+        <a href="blog.html" class="text-yellow-400 font-bold">📄 文章列表</a>
+        <a href="#" class="hover:text-yellow-400 transition">📰 關於我們</a>
+      </nav>
+    </header>
+
+    <h2 class="text-5xl md:text-6xl font-black text-center mb-12 glow-text">
+      📰 文章列表
+    </h2>
+    <main id="list"
+      class="relative z-10 container mx-auto px-6 py-12 max-w-6xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 content-start flex-grow">
+      載入中...
+    </main>
+
+    <footer
+      class="bg-gray-900/70 backdrop-blur-sm border-t border-blue-800 py-6 text-center text-blue-200 text-sm relative z-10">
+      <p>
+        本論壇為球迷自發性建立，與富邦悍將球團無直接關聯<br />
+        © 2025 富邦悍將球迷論壇 | 悍將精神，永不熄滅 ⚔️
+      </p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src="./blog.js"></script>
+  </div>
+</body>
+
+</html>
