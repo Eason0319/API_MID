@@ -6,6 +6,8 @@
   <title>富邦悍將球迷論壇 - 文章內容</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script type="module" src="./blog.js"></script> <script src="./auth.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
     body {
@@ -111,10 +113,19 @@
         </div>
         <h1 class="text-2xl font-black tracking-wide">富邦悍將球迷論壇</h1>
       </div>
-      <nav class="hidden md:flex space-x-8 text-blue-100 font-medium">
+      <nav class="hidden md:flex space-x-8 text-blue-100 font-medium items-center">
         <a href="index.html" class="hover:text-yellow-400 transition">🏠 首頁</a>
         <a href="blog.html" class="text-yellow-400 font-bold">📄 文章列表</a>
         <a href="#" class="hover:text-yellow-400 transition">📰關於我們</a>
+
+        <div id="auth-links" class="flex items-center space-x-4">
+            <a href="login.html" class="bg-blue-500/80 hover:bg-blue-600 px-4 py-2 rounded-full transition">登入</a>
+            <a href="/register.html" class="bg-yellow-400/80 hover:bg-yellow-500 text-blue-900 px-4 py-2 rounded-full transition">註冊</a>
+        </div>
+        <div id="user-info" class="hidden items-center space-x-4">
+            <span id="welcome-message" class="font-bold"></span>
+            <button id="logout-btn" class="bg-red-500/80 hover:bg-red-600 px-4 py-2 rounded-full transition">登出</button>
+        </div>
       </nav>
     </header>
 

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>登入 - 富邦悍將球迷論壇</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+    .hero-gradient {
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #60a5fa 100%);
+      background-size: 400% 400%;
+      animation: gradientMove 12s ease infinite;
+    }
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .texture {
+      background-image: url('https://www.transparenttextures.com/patterns/football-noise.png');
+      background-repeat: repeat;
+      opacity: 0.15;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-950 text-white">
+  <div class="hero-gradient min-h-screen relative overflow-hidden flex flex-col items-center justify-center">
+    <div class="absolute inset-0 texture pointer-events-none"></div>
+
+    <div class="relative z-10 w-full max-w-md p-8 space-y-8 bg-white/10 backdrop-blur-lg rounded-2xl shadow-lg border border-white/20">
+      <div class="text-center">
+        <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg overflow-hidden mx-auto mb-4">
+          <img src="img/logo.jpg" alt="富邦悍將Logo" class="w-full h-full object-cover">
+        </div>
+        <h2 class="text-3xl font-black text-white">會員登入</h2>
+        <p class="mt-2 text-blue-200">加入我們，一起為悍將吶喊！</p>
+      </div>
+      
+      <form id="login-form" class="space-y-6">
+        <div>
+          <label for="username" class="text-sm font-bold text-blue-100 block mb-2">電子郵件</label>
+          <input type="text" id="username" name="username" required
+                 class="w-full px-4 py-3 bg-gray-900/50 border border-blue-400/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition">
+        </div>
+        <div>
+          <label for="password" class="text-sm font-bold text-blue-100 block mb-2">密碼</label>
+          <input type="password" id="password" name="password" required
+                 class="w-full px-4 py-3 bg-gray-900/50 border border-blue-400/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition">
+        </div>
+        
+        <div>
+          <button type="submit"
+                  class="w-full group relative inline-flex items-center justify-center px-8 py-3 text-lg font-bold text-blue-900 bg-yellow-400 rounded-full hover:bg-yellow-300 transition-all duration-300 shadow-lg hover:shadow-yellow-400/50 hover:scale-105">
+            登入
+          </button>
+        </div>
+      </form>
+      
+      <div id="error-message" class="text-center text-red-400 font-bold"></div>
+
+      <p class="text-center text-sm text-blue-200">
+        還沒有帳號嗎？ <a href="/register.html" class="font-bold text-yellow-400 hover:underline">立即註冊</a>
+      </p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script type="module" src="./login.js"></script>
+</body>
+</html>
