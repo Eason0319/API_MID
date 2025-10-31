@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // ▼▼▼ 把您剛剛從 Firebase 網站複製的 firebaseConfig 貼在這裡 ▼▼▼
 const firebaseConfig = {
@@ -17,3 +18,5 @@ const app = initializeApp(firebaseConfig);
 
 // 導出 Firebase Authentication 服務，讓其他 JS 檔案可以使用
 export const auth = getAuth(app);
+// ，導出 Firestore 服務 ▼▼▼
+export const db = getFirestore(app);
