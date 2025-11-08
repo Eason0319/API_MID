@@ -40,3 +40,13 @@ class Post(PostBase):
 class PostDetail(Post):
     comments: List[Comment] = []
     likes: List[Like] = []
+
+class CommentCreate(BaseModel):
+    """ 用於接收新留言的 Schema """
+    text: str
+    author_name: str
+
+class LikeCreate(BaseModel):
+    """ 用於接收新按讚的 Schema """
+    author_name: str
+    profilePic: Optional[str] = None
