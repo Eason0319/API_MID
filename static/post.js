@@ -3,18 +3,17 @@ import { auth, db } from './firebase-init.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { doc, collection, onSnapshot, getDoc, setDoc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+// ... (檔案上半部保持不變) ...
+
 const articleWrapperEl = document.getElementById('article-wrapper');
 const sidebarContentEl = document.getElementById('sidebar-content');
-
 const params = new URLSearchParams(location.search);
 const slug = params.get('slug');
-
-// ▼▼▼ 修改：使用更可靠的狀態變數 ▼▼▼
-let isLikedByCurrentUser = false; // 追蹤目前使用者是否已按讚
+let isLikedByCurrentUser = false;
 let postData = null;
 let currentUser = null;
 let displayedLikesList = [];
-let displayedCommentsList = []; // 追蹤留言
+let displayedCommentsList = [];
 
 function waitForAuthState() {
     return new Promise((resolve) => {
@@ -25,18 +24,13 @@ function waitForAuthState() {
     });
 }
 
-/**
- * 主要執行函式
- */
 async function main() {
   if (!slug) {
     articleWrapperEl.innerHTML = '<div class="text-rose-600">錯誤：缺少文章 slug。</div>';
     return;
   }
-
   try {
     articleWrapperEl.innerHTML = '<div class="text-blue-200">載入中…</div>';
-    
     console.log("正在等待 Firebase 身份驗證...");
     currentUser = await waitForAuthState();
     if (currentUser) {
@@ -44,36 +38,23 @@ async function main() {
     } else {
         console.log("驗證完成，使用者未登入。");
     }
-
-    // 取得文章、按讚、留言
     const [postRes, likesRes, commentsRes] = await Promise.all([
       axios.get(`/api/posts/${slug}`),
       axios.get(`/api/posts/${slug}/likes`),
       axios.get(`/api/posts/${slug}/comments`)
     ]);
-
     postData = postRes.data;
     displayedLikesList = likesRes.data || [];
     displayedCommentsList = commentsRes.data || [];
-    
     document.title = postData.title || '文章';
-
-    // ▼▼▼ 核心修改：在載入時就檢查是否按過讚 ▼▼▼
     if (currentUser) {
         const userName = currentUser.displayName || currentUser.email;
         isLikedByCurrentUser = displayedLikesList.some(like => like.author.name === userName);
     }
-    
-    // 渲染文章
     renderArticle(postData, displayedLikesList, displayedCommentsList);
-    // 更新按讚按鈕的初始狀態
     updateLikeUI(isLikedByCurrentUser, displayedLikesList.length);
-    // 綁定事件
     bindInteractionEvents();
-    
-    // 預設載入留言側邊欄
     loadCommentsSidebar();
-
   } catch (err) {
     document.title = '找不到文章';
     articleWrapperEl.innerHTML = `<div class="text-rose-600">載入失敗或找不到文章：${err.message}</div>`;
@@ -81,23 +62,18 @@ async function main() {
   }
 }
 
-/**
- * 渲染文章的靜態骨架和互動按鈕
- */
 function renderArticle(post, likes, comments) {
   const author = post.author.name ?? '匿名';
   const title = post.title ?? '無標題';
   const body = post.content || '';
   const likesCount = Array.isArray(likes) ? likes.length : 0;
   const commentsCount = Array.isArray(comments) ? comments.length : 0;
-
   articleWrapperEl.innerHTML = `
     <article>
       <h1 class="text-3xl md:text-4xl font-black text-white mb-2">${title}</h1>
       <p class="text-blue-200 text-sm mb-6">作者：${author}</p>
       <div class="prose prose-invert max-w-none text-slate-200 leading-relaxed mb-8">${body}</div>
       <div id="interaction-area" class="flex items-center gap-4 mt-6 border-t border-white/20 pt-6">
-        
         <button id="like-action-btn" title="按讚"
                 class="group flex items-center justify-center h-12 w-12 rounded-full bg-gray-700 text-gray-400 
                        transition-all duration-300 transform 
@@ -105,7 +81,6 @@ function renderArticle(post, likes, comments) {
                        disabled:opacity-50 disabled:cursor-not-allowed">
             <svg id="like-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6"><path stroke="currentColor" stroke-width="2" d="M12 21l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09A6.47 6.47 0 0 1 16.5 3C19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.18L12 21z"/></svg>
         </button>
-        
         <div id="show-likes-trigger" class="text-blue-200 cursor-pointer hover:underline">
             <span id="likes-count" class="font-bold">${likesCount}</span> 人說讚
         </div>
@@ -128,27 +103,19 @@ function renderArticle(post, likes, comments) {
   `;
 }
 
-/**
- * 為互動元素綁定點擊事件
- */
 function bindInteractionEvents() {
     document.getElementById('like-action-btn').addEventListener('click', handleLikeClick);
     document.getElementById('show-likes-trigger').addEventListener('click', loadLikesSidebar);
     document.getElementById('show-comments-trigger').addEventListener('click', loadCommentsSidebar);
 }
 
-/**
- * ▼▼▼ 新增：更新按讚 UI 的函式 ▼▼▼
- */
 function updateLikeUI(isLiked, count) {
     const likeBtn = document.getElementById('like-action-btn');
     const likeIcon = document.getElementById('like-icon');
     const likesCountEl = document.getElementById('likes-count');
-
     if (likesCountEl) {
         likesCountEl.textContent = count;
     }
-
     if (likeBtn && likeIcon) {
         if (isLiked) {
             likeBtn.classList.remove('bg-gray-700', 'text-gray-400');
@@ -162,21 +129,13 @@ function updateLikeUI(isLiked, count) {
     }
 }
 
-
-// --- 側邊欄 (Sidebar) 相關函式 ---
-
-/**
- * 在側邊欄載入按讚列表
- */
 function loadLikesSidebar() { 
   sidebarContentEl.innerHTML = ''; 
   const currentCount = displayedLikesList.length;
-
   if (currentCount === 0) {
       sidebarContentEl.innerHTML = '<div class="text-blue-200">還沒有人按讚。</div>';
       return;
   }
-
   const likesHTML = displayedLikesList.map(like => {
       const authorName = like.author.name || '匿名';
       const imageUrl = like.author.profilePic || `https://i.pravatar.cc/50?u=${encodeURIComponent(authorName)}`; 
@@ -187,7 +146,6 @@ function loadLikesSidebar() {
         </div>
       `;
   }).join('');
-
   sidebarContentEl.innerHTML = `
     <div>
       <h4 class="text-xl font-bold text-white border-b border-white/20 pb-2 mb-4">按讚的用戶 (${currentCount})</h4>
@@ -196,13 +154,9 @@ function loadLikesSidebar() {
   `;
 }
 
-/**
- * 在側邊欄載入留言列表
- */
 function loadCommentsSidebar() {
     sidebarContentEl.innerHTML = ''; 
     const commentsCount = displayedCommentsList.length;
-
     const commentsHTML = (commentsCount === 0)
         ? '<div id="no-comments-message" class="text-blue-200">這篇文章目前沒有留言。</div>'
         : displayedCommentsList.map(comment => `
@@ -211,7 +165,6 @@ function loadCommentsSidebar() {
                 <p class="text-slate-200 text-sm">${comment.text ?? ''}</p>
             </div>
         `).join('');
-
     let commentFormHTML = '';
     if (currentUser) {
         const userNickname = currentUser.displayName || currentUser.email;
@@ -224,7 +177,7 @@ function loadCommentsSidebar() {
                         <textarea id="comment-text" class="w-full bg-gray-900/50 border-blue-400/50 rounded-lg text-white p-3 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition" rows="3" placeholder="輸入留言..." required></textarea>
                         <div id="comment-error" class="text-red-400 text-sm h-4"></div>
                     </div>
-                    <button type-="submit" class="mt-2 w-full bg-yellow-400 hover:bg-yellow-300 text-blue-900 font-bold py-2 px-4 rounded-full transition-all duration-300 hover:scale-105">
+                    <button type="submit" class="mt-2 w-full bg-yellow-400 hover:bg-yellow-300 text-blue-900 font-bold py-2 px-4 rounded-full transition-all duration-300 hover:scale-105">
                         送出留言
                     </button>
                 </form>
@@ -240,7 +193,6 @@ function loadCommentsSidebar() {
             </div>
         `;
     }
-
     sidebarContentEl.innerHTML = `
         <div>
             <h4 class="text-xl font-bold text-white border-b border-white/20 pb-2 mb-4">留言 (${commentsCount})</h4>
@@ -248,39 +200,30 @@ function loadCommentsSidebar() {
             ${commentFormHTML}
         </div>
     `;
-
     const commentForm = document.getElementById('new-comment-form');
     if (commentForm) {
         commentForm.addEventListener('submit', handleCommentSubmit);
     }
 }
 
-/**
- * ▼▼▼ 修改：處理按讚點擊 (呼叫 API) ▼▼▼
- */
 async function handleLikeClick() {
   if (!currentUser) {
     alert("請先登入才能按讚！");
     window.location.href = '/login.html';
     return;
   }
-
   const likeBtn = document.getElementById('like-action-btn');
-  likeBtn.disabled = true; // 防止重複點擊
-
+  likeBtn.disabled = true;
   const authorName = currentUser.displayName || currentUser.email;
   const profilePic = currentUser.photoURL || `https://i.pravatar.cc/50?u=${encodeURIComponent(authorName)}`;
-
+  
   try {
     if (isLikedByCurrentUser) {
       // --- 取消讚 ---
       const payload = { author_name: authorName };
       await axios.delete(`/api/posts/${slug}/like`, { data: payload });
-
-      // 更新前端狀態
       isLikedByCurrentUser = false;
       displayedLikesList = displayedLikesList.filter(like => like.author.name !== authorName);
-
     } else {
       // --- 按讚 ---
       const payload = { 
@@ -288,103 +231,75 @@ async function handleLikeClick() {
           profilePic: profilePic
       };
       const response = await axios.post(`/api/posts/${slug}/like`, payload);
-
-      // 更新前端狀態
       isLikedByCurrentUser = true;
-      displayedLikesList.unshift(response.data); // 將後端返回的真實資料加入
+      displayedLikesList.unshift(response.data);
     }
-
-    // 更新 UI
     updateLikeUI(isLikedByCurrentUser, displayedLikesList.length);
-    
-    // 如果側邊欄剛好在顯示按讚列表，就立即重新整理它
     if (sidebarContentEl.querySelector('h4')?.textContent.includes('按讚的用戶')) {
         loadLikesSidebar();
     }
-
   } catch (err) {
-    console.error('按讚/取消讚失敗:', err);
-    alert('操作失敗，請稍後再試。');
+    // ▼▼▼ 修正：顯示更詳細的錯誤 ▼▼▼
+    console.error('按讚/取消讚失敗:', err.response ? err.response.data : err.message);
+    alert('操作失敗！請查看 console 獲取詳細資訊。');
   } finally {
-    likeBtn.disabled = false; // 恢復按鈕
+    likeBtn.disabled = false;
   }
 }
 
-/**
- * ▼▼▼ 修改：處理留言提交 (呼叫 API) ▼▼▼
- */
 async function handleCommentSubmit(event) {
     event.preventDefault(); 
-    if (!currentUser) { /* 理論上不會發生，因為表單不會顯示 */ return; }
-
+    if (!currentUser) return;
     const commentErrorEl = document.getElementById('comment-error');
     const textarea = document.getElementById('comment-text');
     const submitBtn = event.target.querySelector('button[type="submit"]');
-
     const authorName = currentUser.displayName || currentUser.email;
     const commentText = textarea.value.trim();
-
     commentErrorEl.textContent = '';
     if (!commentText) {
         commentErrorEl.textContent = '留言內容不能為空！';
         return;
     }
-
     submitBtn.disabled = true;
     submitBtn.textContent = '送出中...';
-
     try {
         const payload = {
             text: commentText,
             author_name: authorName
         };
-
-        // 呼叫後端 API
         const response = await axios.post(`/api/posts/${slug}/comments`, payload);
-        
-        // 用後端返回的真實資料更新
         const newComment = response.data;
         displayedCommentsList.push(newComment);
-        
-        // 更新 UI
         updateCommentUI(newComment);
-        
-        textarea.value = ''; // 清空
-
+        textarea.value = ''; 
     } catch (err) {
-        console.error('留言失敗:', err);
-        commentErrorEl.textContent = '送出留言失敗，請稍後再試。';
+        // ▼▼▼ 修正：使用 alert 彈出錯誤 ▼▼▼
+        console.error('留言失敗:', err.response ? err.response.data : err.message);
+        alert('留言失敗！請查看 console 獲取詳細資訊。');
+        commentErrorEl.textContent = '留言失敗，請稍後再試。';
     } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = '送出留言';
     }
 }
 
-/**
- * ▼▼▼ 新增：更新留言 UI 的函式 ▼▼▼
- */
 function updateCommentUI(newComment) {
     const commentListContainer = document.getElementById('comment-list-container');
     const noCommentsMessage = document.getElementById('no-comments-message');
-    
     const newCommentHTML = `
         <div class="mb-4 last:mb-0">
             <p class="font-semibold text-yellow-400">${newComment.author.name ?? '匿名'}</p>
             <p class="text-slate-200 text-sm">${newComment.text ?? ''}</p>
         </div>
     `;
-
     if (noCommentsMessage) {
-        commentListContainer.innerHTML = newCommentHTML; // 移除「沒有留言」的訊息
+        commentListContainer.innerHTML = newCommentHTML;
     } else {
-        commentListContainer.innerHTML += newCommentHTML; // 附加到列表末端
+        commentListContainer.innerHTML += newCommentHTML;
     }
-
-    // 更新計數
     const commentsCount = displayedCommentsList.length;
     const sidebarTitle = sidebarContentEl.querySelector('h4');
     const commentsCountButton = document.getElementById('comments-count');
-    
     if (sidebarTitle) {
         sidebarTitle.textContent = `留言 (${commentsCount})`;
     }
@@ -393,5 +308,4 @@ function updateCommentUI(newComment) {
     }
 }
 
-// 執行主函式
 main();
