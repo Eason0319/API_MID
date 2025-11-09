@@ -1,6 +1,6 @@
 // 匯入 Firebase Authentication 服務 和 註冊函式
 import { auth } from './firebase-init.js';
-import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const form = document.getElementById('register-form');
 const errorMessageEl = document.getElementById('error-message');
@@ -34,6 +34,9 @@ form.addEventListener('submit', async (e) => {
     
     // 註冊成功
     const user = userCredential.user;
+    await updateProfile(user, {
+      displayName: nickname
+    });
     console.log('註冊成功:', user);
     
     alert('註冊成功！將為您自動登入並跳轉至首頁。');
