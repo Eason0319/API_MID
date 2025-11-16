@@ -3,6 +3,12 @@ import { auth } from './firebase-init.js';
 // 【新增】從 Firebase SDK 匯入 onAuthStateChanged 和 signOut 函式
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+// 建立一個變數來儲存 Promise 的 resolve 函式
+let resolveAuthInit;
+// 導出這個 Promise，讓 blog.js 可以 await
+export const waitForAuthInit = new Promise((resolve) => {
+    resolveAuthInit = resolve; // 把 resolve 函式存到外面
+});
 /**
  * 根據傳入的 user 物件，更新導覽列的 UI
  * @param {object | null} user - Firebase 的 user 物件，或是在未登入時為 null
@@ -61,4 +67,25 @@ function updateNavbar(user) {
 onAuthStateChanged(auth, (user) => {
     console.log("auth.js: 偵測到身份狀態改變，目前使用者:", user ? user.uid : '未登入');
     updateNavbar(user);
+
+    if (resolveAuthInit) {
+        // 如果這個 Promise 還沒被 resolve 過
+        resolveAuthInit(user); // 第一次執行時，resolve
+        resolveAuthInit = null; // 設為 null，確保只 resolve 一次
+    }
 });
+
+export async function getCurrentIdToken(forceRefresh = false) {
+    const user = auth.currentUser;
+    if (!user) {
+        // console.warn("getCurrentIdToken: 使用者尚未登入。");
+        // 返回 null，讓呼叫者決定如何處理
+        return null;
+    }
+    try {
+        return await user.getIdToken(forceRefresh);
+    } catch (error) {
+        console.error("取得 ID Token 時發生錯誤:", error);
+        return null;
+    }
+}

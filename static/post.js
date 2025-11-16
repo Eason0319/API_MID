@@ -218,19 +218,22 @@ async function handleLikeClick() {
   const profilePic = currentUser.photoURL || `https://i.pravatar.cc/50?u=${encodeURIComponent(authorName)}`;
   
   try {
+    // 【新增】取得 Token
+    const token = await currentUser.getIdToken();
+    const authHeader = { 'Authorization': `Bearer ${token}` };
+
     if (isLikedByCurrentUser) {
       // --- 取消讚 ---
-      const payload = { author_name: authorName };
-      await axios.delete(`/api/posts/${slug}/like`, { data: payload });
+      const payload = {};
+      await axios.delete(`/api/posts/${slug}/like`, { data: payload, headers: authHeader });
       isLikedByCurrentUser = false;
       displayedLikesList = displayedLikesList.filter(like => like.author.name !== authorName);
     } else {
       // --- 按讚 ---
       const payload = { 
-          author_name: authorName,
           profilePic: profilePic
       };
-      const response = await axios.post(`/api/posts/${slug}/like`, payload);
+      const response = await axios.post(`/api/posts/${slug}/like`, payload, {headers: authHeader});
       isLikedByCurrentUser = true;
       displayedLikesList.unshift(response.data);
     }
@@ -263,11 +266,12 @@ async function handleCommentSubmit(event) {
     submitBtn.disabled = true;
     submitBtn.textContent = '送出中...';
     try {
+        const token = await currentUser.getIdToken();
         const payload = {
             text: commentText,
-            author_name: authorName
         };
-        const response = await axios.post(`/api/posts/${slug}/comments`, payload);
+        const response = await axios.post(`/api/posts/${slug}/comments`, payload,
+        {headers: { 'Authorization': `Bearer ${token}` }}  );
         const newComment = response.data;
         displayedCommentsList.push(newComment);
         updateCommentUI(newComment);

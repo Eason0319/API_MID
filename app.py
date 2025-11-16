@@ -8,11 +8,13 @@ from contextlib import asynccontextmanager
 from db.init_data import create_tables, init_db
 from db.engine import SessionLocal
 from routers import posts as post_router
+from auth.firebase import init_firebase
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("--- Lifespan event: startup ---")
     try:
+        init_firebase()
         # 現在 create_tables() 會確保所有模型都已載入
         create_tables()
         

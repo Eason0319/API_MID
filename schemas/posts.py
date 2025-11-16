@@ -44,9 +44,9 @@ class PostDetail(Post):
 class CommentCreate(BaseModel):
     """ 用於接收新留言的 Schema """
     text: str
-    author_name: str
+    #author_name: str
 
 class LikeCreate(BaseModel):
     """ 用於接收新按讚的 Schema """
-    author_name: str
+    #author_name: str
     profilePic: Optional[str] = None
